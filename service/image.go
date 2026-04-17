@@ -4,11 +4,11 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/mereith/nav/database"
-	"github.com/mereith/nav/goscraper"
-	"github.com/mereith/nav/logger"
-	"github.com/mereith/nav/types"
-	"github.com/mereith/nav/utils"
+	"github.com/imkiven/nav/database"
+	"github.com/imkiven/nav/goscraper"
+	"github.com/imkiven/nav/logger"
+	"github.com/imkiven/nav/types"
+	"github.com/imkiven/nav/utils"
 )
 
 func getIcon(url string) string {

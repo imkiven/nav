@@ -1,4 +1,4 @@
-module github.com/mereith/nav
+module github.com/imkiven/nav
 
 go 1.23.0
 

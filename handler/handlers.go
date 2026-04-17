@@ -11,11 +11,11 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mereith/nav/database"
-	"github.com/mereith/nav/logger"
-	"github.com/mereith/nav/service"
-	"github.com/mereith/nav/types"
-	"github.com/mereith/nav/utils"
+	"github.com/imkiven/nav/database"
+	"github.com/imkiven/nav/logger"
+	"github.com/imkiven/nav/service"
+	"github.com/imkiven/nav/types"
+	"github.com/imkiven/nav/utils"
 )
 
 func ExportToolsHandler(c *gin.Context) {

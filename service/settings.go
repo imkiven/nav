@@ -3,9 +3,9 @@ package service
 import (
 	"database/sql"
 
-	"github.com/mereith/nav/database"
-	"github.com/mereith/nav/logger"
-	"github.com/mereith/nav/types"
+	"github.com/imkiven/nav/database"
+	"github.com/imkiven/nav/logger"
+	"github.com/imkiven/nav/types"
 )
 
 func GetSetting() types.Setting {

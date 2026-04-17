@@ -11,11 +11,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mereith/nav/database"
-	"github.com/mereith/nav/handler"
-	"github.com/mereith/nav/logger"
-	"github.com/mereith/nav/middleware"
-	"github.com/mereith/nav/utils"
+	"github.com/imkiven/nav/database"
+	"github.com/imkiven/nav/handler"
+	"github.com/imkiven/nav/logger"
+	"github.com/imkiven/nav/middleware"
+	"github.com/imkiven/nav/utils"
 
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"

@@ -1,7 +1,7 @@
 # Nav
 
 一个轻量的导航站，原开发者不怎么维护了，魔改私用。  
-[源库地址](https://github.com/Mereithhh/van-nav)  
+[源库地址](https://github.com/imkivenhh/van-nav)  
 以下为原仓库内容，等有时间再更新
 > 新增了 [API 文档](https://van-nav-api.mereith.dev)，用 AI 生成的，如果不准确请提 Issue 哦。
 
@@ -139,7 +139,7 @@ sudo systemctl daemon-reload && sudo systemctl enable --now VanNav.service
 
 ## 浏览器插件
 
-具体请看： [浏览器插件仓库](https://github.com/Mereithhh/van-nav-extension)
+具体请看： [浏览器插件仓库](https://github.com/imkivenhh/van-nav-extension)
 
 具有一键增加工具，快速打开管理后台和主站等功能。具体自行探索哦。
 
@@ -153,7 +153,7 @@ sudo systemctl daemon-reload && sudo systemctl enable --now VanNav.service
 
 ## FAQ
 
-- 忘记密码了怎么办： [看这里](https://github.com/Mereithhh/van-nav/issues/36)
+- 忘记密码了怎么办： [看这里](https://github.com/imkivenhh/van-nav/issues/36)
 
 ## 参与开发
 

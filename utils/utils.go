@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mereith/nav/logger"
-	"github.com/mereith/nav/types"
+	"github.com/imkiven/nav/logger"
+	"github.com/imkiven/nav/types"
 )
 
 var DemoMode bool

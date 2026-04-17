@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mereith/nav/logger"
+	"github.com/imkiven/nav/logger"
 )
 
 type ServeFileSystem interface {

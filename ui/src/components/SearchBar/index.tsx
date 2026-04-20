@@ -43,8 +43,8 @@ const SearchBar = (props: SearchBarProps) => {
           ref={inputRef}
           id="search-bar"
           type="search"
-          className="block w-full rounded-md border-0 bg-gray-100 py-3 pl-10 pr-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-inset focus:ring-blue-600 dark:bg-gray-800 dark:text-white dark:ring-gray-700 dark:placeholder:text-gray-500 dark:focus:bg-gray-800 sm:text-lg sm:leading-6 transition-all"
-          placeholder="按任意键直接开始搜索..."
+          className="block w-full rounded-xl border-0 bg-white/90 py-4 pl-12 pr-4 text-gray-900 shadow-sm backdrop-blur-sm ring-1 ring-inset ring-white/20 focus:bg-white focus:ring-2 focus:ring-inset focus:ring-purple-500 dark:bg-gray-800/90 dark:text-white dark:ring-gray-700/50 dark:placeholder:text-gray-400 dark:focus:bg-gray-800 md:text-lg sm:leading-6 transition-all"
+          placeholder="搜索关键词，按任意字母或 Enter 开始..."
           value={props.searchString}
           onChange={(ev) => {
             const v = ev.target.value

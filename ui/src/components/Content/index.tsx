@@ -1,4 +1,3 @@
-
 import CardV2 from "../CardV2";
 import SearchBar from "../SearchBar";
 import { Loading } from "../Loading";
@@ -13,7 +12,8 @@ import DarkSwitch from "../DarkSwitch";
 
 import { toggleJumpTarget } from "../../utils/setting";
 import LockScreen from "../LockScreen";
-import { InboxIcon } from "@heroicons/react/24/outline";
+import { InboxIcon, Bars3BottomLeftIcon, ChevronDoubleLeftIcon } from "@heroicons/react/24/outline";
+import RightSidebar from "../RightSidebar";
 
 const mutiSearch = (s: string, t: string) => {
   const source = (s || "").toLowerCase();
@@ -30,13 +30,14 @@ const Content = (props: any) => {
   const [searchString, setSearchString] = useState("");
   const [val, setVal] = useState("");
   const [locked, setLocked] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   const filteredDataRef = useRef<any>([]);
 
   const showGithub = useMemo(() => {
-    const hide = data?.setting?.hideGithub === true
+    const hide = data?.setting?.hideGithub === true;
     return !hide;
-  }, [data])
+  }, [data]);
 
   const loadData = useCallback(async () => {
     try {
@@ -44,8 +45,6 @@ const Content = (props: any) => {
       const r = await FetchList();
       if (r.locked) {
         setLocked(true);
-        // Still set data setting for title/favicon if available?
-        // Backend returns setting even if locked.
         setData({ setting: r.setting });
       } else {
         setLocked(false);
@@ -68,18 +67,16 @@ const Content = (props: any) => {
     loadData();
   }, [loadData]);
 
-
   // Inject Custom Code
   useEffect(() => {
     if (data?.setting) {
-      // CSS
       if (data.setting.customCSS) {
-        const style = document.createElement('style');
-        style.id = 'custom-css';
+        const style = document.createElement("style");
+        style.id = "custom-css";
         style.innerHTML = data.setting.customCSS;
         document.head.appendChild(style);
         return () => {
-          const el = document.getElementById('custom-css');
+          const el = document.getElementById("custom-css");
           if (el) el.remove();
         };
       }
@@ -90,25 +87,22 @@ const Content = (props: any) => {
     if (data?.setting?.customJS) {
       try {
         const rawJS = data.setting.customJS.trim();
-        const existingScript = document.getElementById('custom-js');
+        const existingScript = document.getElementById("custom-js");
         if (existingScript) existingScript.remove();
 
-        // Check if input is a script tag
-        if (rawJS.startsWith('<script')) {
-          const div = document.createElement('div');
+        if (rawJS.startsWith("<script")) {
+          const div = document.createElement("div");
           div.innerHTML = rawJS;
-          const originalScript = div.querySelector('script');
+          const originalScript = div.querySelector("script");
 
           if (originalScript) {
-            const script = document.createElement('script');
-            script.id = 'custom-js';
+            const script = document.createElement("script");
+            script.id = "custom-js";
 
-            // Copy all attributes
-            Array.from(originalScript.attributes).forEach(attr => {
+            Array.from(originalScript.attributes).forEach((attr) => {
               script.setAttribute(attr.name, attr.value);
             });
 
-            // Copy content
             if (originalScript.innerHTML) {
               script.innerHTML = originalScript.innerHTML;
             }
@@ -116,15 +110,14 @@ const Content = (props: any) => {
             document.body.appendChild(script);
           }
         } else {
-          // Treat as raw JS code
-          const script = document.createElement('script');
-          script.id = 'custom-js';
+          const script = document.createElement("script");
+          script.id = "custom-js";
           script.innerHTML = rawJS;
           document.body.appendChild(script);
         }
 
         return () => {
-          const el = document.getElementById('custom-js');
+          const el = document.getElementById("custom-js");
           if (el) el.remove();
         };
       } catch (e) {
@@ -138,7 +131,9 @@ const Content = (props: any) => {
     if (tag !== "管理后台") {
       window.localStorage.setItem("tag", tag);
     }
-    resetSearch(true);
+    // Only reset search string, don't reset chosen tag
+    setVal("");
+    setSearchString("");
   };
 
   const resetSearch = (notSetTag?: boolean) => {
@@ -157,15 +152,11 @@ const Content = (props: any) => {
     } else {
       resetSearch();
     }
-  }
+  };
 
   const filteredData = useMemo(() => {
     if (data.tools) {
       const localResult = data.tools
-        .filter((item: any) => {
-          if (currTag === "全部工具") return true;
-          return item.catelog === currTag;
-        })
         .filter((item: any) => {
           if (searchString === "") return true;
           return (
@@ -178,11 +169,11 @@ const Content = (props: any) => {
     } else {
       return [];
     }
-  }, [data, currTag, searchString]);
+  }, [data, searchString]);
 
   useEffect(() => {
-    filteredDataRef.current = filteredData
-  }, [filteredData])
+    filteredDataRef.current = filteredData;
+  }, [filteredData]);
 
   const onKeyEnter = useCallback((ev: KeyboardEvent) => {
     const cards = filteredDataRef.current;
@@ -195,7 +186,7 @@ const Content = (props: any) => {
     if (ev.ctrlKey || ev.metaKey) {
       const num = Number(ev.key);
       if (isNaN(num)) return;
-      ev.preventDefault()
+      ev.preventDefault();
       const index = Number(ev.key) - 1;
       if (index >= 0 && index < cards.length) {
         window.open(cards[index]?.url, "_blank");
@@ -212,11 +203,11 @@ const Content = (props: any) => {
     }
     return () => {
       document.removeEventListener("keydown", onKeyEnter);
-    }
-  }, [searchString, onKeyEnter])
+    };
+  }, [searchString, onKeyEnter]);
 
-  const renderCardsV2 = () => {
-    return filteredData.map((item, index) => {
+  const renderCardsV2 = (cardsArr: any[]) => {
+    return cardsArr.map((item, index) => {
       return (
         <CardV2
           title={item.name}
@@ -243,64 +234,141 @@ const Content = (props: any) => {
     return <LockScreen onUnlock={loadData} />;
   }
 
+  const isSearching = searchString.trim() !== "";
+  const catelogsList: string[] = data?.catelogs ?? ["全部工具"];
+
   return (
     <div className={clsx("van-layout-root", styles.root)}>
       <Helmet>
         <meta charSet="utf-8" />
-        <link
-          rel="icon"
-          href={data?.setting?.favicon ?? "favicon.ico"}
-        />
+        <link rel="icon" href={data?.setting?.favicon ?? "favicon.ico"} />
         <title>{data?.setting?.title ?? "Van Nav"}</title>
       </Helmet>
 
-      {/* Top Bar - Sticky */}
-      <div className={clsx("van-layout-header", styles.header)}>
-        <div className={clsx("van-layout-header-content", styles.headerContent)}>
-          <SearchBar
-            searchString={val}
-            setSearchText={(t) => {
-              setVal(t);
-              handleSetSearch(t);
-            }}
-          />
+      {/* Left Sidebar */}
+      <div className={clsx(
+        "transition-all duration-300 ease-in-out flex flex-col flex-shrink-0 z-30 sticky top-0 overflow-hidden",
+        isSidebarCollapsed ? "w-0 opacity-0 border-r-0 md:h-screen" : "van-layout-sidebar w-full md:w-64 md:h-screen bg-white dark:bg-gray-900 md:border-r border-b md:border-b-0 border-gray-200 dark:border-gray-800 shadow-sm"
+      )}>
+        <div className="py-6 px-4 flex justify-between items-center border-b border-gray-100 dark:border-gray-800 shrink-0">
+          <h1 className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-500 tracking-tight truncate">
+            {data?.setting?.title ?? "Van Nav"}
+          </h1>
+          <button 
+            onClick={() => setIsSidebarCollapsed(true)}
+            className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800"
+            title="收起侧边栏"
+          >
+            <ChevronDoubleLeftIcon className="w-5 h-5 hidden md:block" />
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto py-6 hide-scrollbar min-w-[256px]">
           <TagSelector
-            tags={data?.catelogs ?? ["全部工具"]}
+            tags={catelogsList}
             currTag={currTag}
             onTagChange={handleSetCurrTag}
           />
         </div>
       </div>
 
-      {/* Content Area */}
-      <div className={clsx("van-layout-content", styles.contentContainer)}>
-        {loading ? (
-          <Loading />
-        ) : filteredData.length > 0 ? (
-          <div className={clsx("van-layout-grid", styles.grid)} style={{ gridTemplateColumns: "repeat(auto-fill, minmax(var(--card-min-width), 1fr))" }}>
-            {renderCardsV2()}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-20 text-center animate-in fade-in zoom-in-95 duration-300">
-            <InboxIcon className="h-16 w-16 text-gray-300 dark:text-gray-700 mb-4" />
-            <p className="text-gray-400 dark:text-gray-500 text-sm">
-              {searchString ? (
-                <span>
-                  没有找到与 <span className="font-medium text-gray-500 dark:text-gray-400">“{searchString}”</span> 相关的工具
-                </span>
-              ) : (
-                "这里空空如也"
-              )}
-            </p>
-          </div>
+      {/* Main Container */}
+      <div className={clsx("van-layout-main", styles.mainContainer)}>
+        
+        {/* Toggle Button for Collapsed State */}
+        {isSidebarCollapsed && (
+          <button
+            onClick={() => setIsSidebarCollapsed(false)}
+            className="fixed top-6 left-4 z-40 p-2 bg-white dark:bg-gray-800 text-gray-500 shadow-md rounded-full border border-gray-200 dark:border-gray-700 hover:bg-gray-50 focus:outline-none"
+            title="展开侧边栏"
+          >
+            <Bars3BottomLeftIcon className="w-6 h-6" />
+          </button>
         )}
-      </div>
 
-      {/* Footer / Record */}
-      <div className={clsx("van-layout-footer", styles.footer)}>
-        <a href="https://beian.miit.gov.cn" target="_blank" rel="noreferrer" className="hover:text-gray-500 transition-colors">
-          {data?.setting?.govRecord ?? ""}
-        </a>
+        {/* Top Banner (Hero Area) */}
+        <div className={styles.banner}>
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="relative max-w-3xl mx-auto w-full px-4 text-center z-10">
+            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-8 tracking-wide drop-shadow-md">
+              发现最新实用工具与资源
+            </h2>
+            <div className="bg-white/10 p-2 rounded-xl backdrop-blur-md shadow-2xl">
+              <SearchBar
+                searchString={val}
+                setSearchText={(t) => {
+                  setVal(t);
+                  handleSetSearch(t);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Inner Content Area */}
+        <div className="flex px-4 md:px-6 lg:px-8 py-8 w-full mx-auto gap-6 lg:gap-8 max-w-[1600px] mb-16">
+          {/* Main List Sector */}
+          <div className="flex-1 min-w-0">
+            {loading ? (
+              <Loading />
+            ) : isSearching ? (
+              // Search Results Block
+              <div className="animate-in fade-in zoom-in-95 duration-300">
+                <h3 className="mb-6 text-xl font-medium text-gray-800 dark:text-gray-200">搜索结果</h3>
+                {filteredData.length > 0 ? (
+                  <div className={styles.grid}>
+                    {renderCardsV2(filteredData)}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-20 text-center">
+                    <InboxIcon className="h-16 w-16 text-gray-300 dark:text-gray-700 mb-4" />
+                    <p className="text-gray-400 dark:text-gray-500 text-sm">
+                      没有找到与 <span className="font-medium">“{searchString}”</span>相关的工具
+                    </p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              // Categories Block
+              <div className="space-y-12">
+                {catelogsList.map((cat) => {
+                  if (cat === "全部工具" || cat === "管理后台") return null;
+                  const cards = (data?.tools ?? []).filter((t: any) => t.catelog === cat);
+                  if (cards.length === 0) return null;
+                  return (
+                    <div key={cat} id={`cat-${cat}`} className="scroll-mt-24 animate-in fade-in zoom-in-95 duration-300">
+                      <h3 className="mb-6 text-xl font-semibold flex items-center text-gray-800 dark:text-gray-200">
+                        <span className="w-1.5 h-6 bg-purple-500 rounded-full mr-3 shadow-sm"></span>
+                        {cat}
+                      </h3>
+                      <div className={styles.grid}>
+                        {renderCardsV2(cards)}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Right Sidebar */}
+          <RightSidebar
+            totalTools={data?.tools?.filter((t: any) => t.catelog !== "管理后台").length ?? 0}
+            totalCategories={data?.catelogs?.filter((c: string) => c !== "全部工具" && c !== "管理后台").length ?? 0}
+          />
+        </div>
+        
+        {/* Footer */}
+        <div className={styles.footer}>
+          <a
+            href="https://beian.miit.gov.cn"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-gray-500 transition-colors"
+          >
+            {data?.setting?.govRecord ?? ""}
+          </a>
+        </div>
+
       </div>
 
       {showGithub && <GithubLink />}
@@ -310,12 +378,12 @@ const Content = (props: any) => {
 };
 
 const styles = {
-  root: "min-h-screen bg-gray-50 pb-20 dark:bg-gray-900",
-  header: "sticky top-0 z-30 w-full bg-gray-50/90 py-4 backdrop-blur transition-colors dark:bg-gray-900/90",
-  headerContent: "container mx-auto px-4 max-w-7xl",
-  contentContainer: "container mx-auto px-4 max-w-7xl",
-  grid: "grid gap-3 sm:gap-4",
-  footer: "fixed bottom-2 left-0 right-0 text-center text-xs text-gray-400 dark:text-gray-600",
+  root: "min-h-screen bg-gray-50 dark:bg-gray-900 md:flex md:flex-row pb-20 md:pb-0",
+  // original sidebar style was moved directly to clsx in JS logic
+  mainContainer: "flex-1 flex flex-col min-w-0 transition-colors overflow-y-auto h-screen relative",
+  banner: "relative w-full py-16 md:py-24 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shrink-0",
+  grid: "grid gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4",
+  footer: "absolute bottom-4 left-0 right-0 text-center text-xs text-gray-400 dark:text-gray-600 pointer-events-auto",
 };
 
 export default Content;

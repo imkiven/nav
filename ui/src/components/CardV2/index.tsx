@@ -56,16 +56,14 @@ const Card = ({ title, url, des, logo, catelog, onClick, index, isSearching }: C
 };
 
 const styles = {
-  container: "group relative flex w-full cursor-pointer flex-col items-center p-4 rounded-xl bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:bg-gray-800 sm:flex-row sm:items-center sm:text-left",
+  container: "group relative flex w-full cursor-pointer flex-col p-3 rounded-lg bg-white shadow-[0_2px_4px_rgba(0,0,0,0.02)] border border-gray-100 transition-all duration-300 hover:shadow-[0_8px_16px_rgba(0,0,0,0.06)] hover:border-purple-100 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-purple-900/50 sm:flex-row sm:items-start sm:text-left h-full",
   index: "absolute right-2 top-2 font-mono text-xs text-gray-300 dark:text-gray-600",
-  iconWrapper: "mb-2 flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-700 overflow-hidden sm:mb-0 sm:mr-4 sm:h-12 sm:w-12",
-  // iconPlaceholder: removed
-  // iconImg: removed
+  iconWrapper: "mb-2 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-50/50 dark:bg-gray-700/30 overflow-hidden sm:mb-0 sm:mr-3 sm:mt-0.5",
   content: "flex flex-col items-center min-w-0 flex-1 w-full sm:items-start",
   header: "flex flex-col items-center gap-1 w-full sm:flex-row sm:justify-between sm:w-full",
-  title: "truncate text-sm text-gray-900 dark:text-gray-100 w-full text-center sm:w-auto sm:text-left sm:flex-1",
-  catelog: "hidden sm:block shrink-0 rounded bg-gray-100 px-2 py-0.5 text-[10px] text-gray-500 dark:bg-gray-700 dark:text-gray-400",
-  desc: "hidden sm:line-clamp-3 mt-1 text-xs text-gray-500 dark:text-gray-400 break-all",
+  title: "truncate text-[15px] font-medium text-gray-800 dark:text-gray-200 w-full text-center sm:w-auto sm:text-left sm:flex-1 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors",
+  catelog: "hidden sm:block shrink-0 rounded bg-gray-50 px-1.5 py-0.5 text-[10px] text-gray-400 dark:bg-gray-700 dark:text-gray-500",
+  desc: "hidden sm:line-clamp-2 mt-1 text-xs text-gray-500/90 dark:text-gray-400/90 break-all leading-relaxed",
 };
 
 export default Card;
